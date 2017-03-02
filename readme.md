@@ -1,6 +1,6 @@
-# GoHeft # MDToc [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=master)](https://travis-ci.org/essentialkaos/goheft) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/goheft)](https://goreportcard.com/report/github.com/essentialkaos/goheft) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+# GoHeft [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=master)](https://travis-ci.org/essentialkaos/goheft) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/goheft)](https://goreportcard.com/report/github.com/essentialkaos/goheft) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
 
-`GoHeft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
+`goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
 ## Installation
 
