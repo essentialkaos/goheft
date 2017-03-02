@@ -9,7 +9,9 @@ main() {
 
   mv goheft goheft-binary
 
-  if [[ $(./goheft-binary goheft.go | wc -l) -lt 20 ]] ; then
+  ./goheft-binary goheft.go
+
+  if [[ $? -ne 0 ]] ; then
     exit 1
   fi
 }
