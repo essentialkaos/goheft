@@ -15,20 +15,21 @@ import (
 	"sort"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v6/arg"
-	"pkg.re/essentialkaos/ek.v6/env"
-	"pkg.re/essentialkaos/ek.v6/fmtc"
-	"pkg.re/essentialkaos/ek.v6/fmtutil"
-	"pkg.re/essentialkaos/ek.v6/fsutil"
-	"pkg.re/essentialkaos/ek.v6/strutil"
-	"pkg.re/essentialkaos/ek.v6/usage"
+	"pkg.re/essentialkaos/ek.v7/arg"
+	"pkg.re/essentialkaos/ek.v7/env"
+	"pkg.re/essentialkaos/ek.v7/fmtc"
+	"pkg.re/essentialkaos/ek.v7/fmtutil"
+	"pkg.re/essentialkaos/ek.v7/fsutil"
+	"pkg.re/essentialkaos/ek.v7/strutil"
+	"pkg.re/essentialkaos/ek.v7/usage"
+	"pkg.re/essentialkaos/ek.v7/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.0.1"
+	VER  = "0.1.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -152,7 +153,7 @@ func process(file string) {
 func getLibsInfo(workDir string) LibInfoSlice {
 	libs := fsutil.ListAllFiles(
 		workDir, true,
-		&fsutil.ListingFilter{
+		fsutil.ListingFilter{
 			MatchPatterns: []string{"*.a"},
 		},
 	)
@@ -259,8 +260,6 @@ func printWarn(f string, a ...interface{}) {
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 func showUsage() {
-	usage.Breadcrumbs = true
-
 	info := usage.NewInfo("", "file")
 
 	info.AddOption(ARG_EXTERNAL, "Shadow internal packages")
@@ -277,13 +276,13 @@ func showUsage() {
 
 func showAbout() {
 	about := &usage.About{
-		App:        APP,
-		Version:    VER,
-		Desc:       DESC,
-		Year:       2006,
-		Owner:      "ESSENTIAL KAOS",
-		License:    "Essential Kaos Open Source License <https://essentialkaos.com/ekol>",
-		Repository: "essentialkaos/goheft",
+		App:           APP,
+		Version:       VER,
+		Desc:          DESC,
+		Year:          2006,
+		Owner:         "ESSENTIAL KAOS",
+		License:       "Essential Kaos Open Source License <https://essentialkaos.com/ekol>",
+		UpdateChecker: usage.UpdateChecker{"essentialkaos/goheft", update.GitHubChecker},
 	}
 
 	about.Render()
