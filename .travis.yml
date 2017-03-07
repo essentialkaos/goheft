@@ -22,7 +22,7 @@ matrix:
     - go: tip
 
 before_install:
-  - go get pkg.re/essentialkaos/ek.v6
+  - go get pkg.re/essentialkaos/ek.v7
 
 script:
   - .travis/script.sh
