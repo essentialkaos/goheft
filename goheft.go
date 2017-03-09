@@ -29,7 +29,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.1.0"
+	VER  = "0.1.1"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -125,7 +125,7 @@ func configureUI() {
 // process start build
 func process(file string) {
 	if !fsutil.IsExist(file) {
-		printError("Can't build binary - file %s is not exist", file)
+		printError("Can't build binary - file %s does not exist", file)
 		os.Exit(1)
 	}
 
