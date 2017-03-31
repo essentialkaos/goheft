@@ -29,7 +29,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.1.1"
+	VER  = "0.1.2"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -125,16 +125,14 @@ func configureUI() {
 // process start build
 func process(file string) {
 	if !fsutil.IsExist(file) {
-		printError("Can't build binary - file %s does not exist", file)
-		os.Exit(1)
+		printErrorAndExit("Can't build binary - file %s does not exist", file)
 	}
 
 	workDir, err := buildBinary(file)
 
 	if err != nil {
-		printError(err.Error())
 		os.RemoveAll(workDir)
-		os.Exit(1)
+		printErrorAndExit(err.Error())
 	}
 
 	libsInfo := getLibsInfo(workDir)
@@ -249,12 +247,18 @@ func parseBuildOutput(data []byte) (string, error) {
 
 // printError prints error message to console
 func printError(f string, a ...interface{}) {
-	fmtc.Printf("{r}"+f+"{!}\n", a...)
+	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
 }
 
-// printWarn prints warning message to console
+// printError prints warning message to console
 func printWarn(f string, a ...interface{}) {
-	fmtc.Printf("{y}"+f+"{!}\n", a...)
+	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
+}
+
+// printErrorAndExit print error mesage and exit with exit code 1
+func printErrorAndExit(f string, a ...interface{}) {
+	printError(f, a...)
+	os.Exit(1)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
