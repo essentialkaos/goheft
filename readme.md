@@ -6,6 +6,8 @@
 
 ## Installation
 
+### From source
+
 Before the initial install allows git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)):
 
 ```
@@ -23,6 +25,10 @@ If you want update GoHeft to latest stable release, do:
 ```
 go get -u github.com/essentialkaos/goheft
 ```
+
+### Prebuilt binaries
+
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.io/goheft/latest).
 
 ## Usage
 
