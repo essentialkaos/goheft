@@ -15,30 +15,30 @@ import (
 	"sort"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v8/arg"
-	"pkg.re/essentialkaos/ek.v8/env"
-	"pkg.re/essentialkaos/ek.v8/fmtc"
-	"pkg.re/essentialkaos/ek.v8/fmtutil"
-	"pkg.re/essentialkaos/ek.v8/fsutil"
-	"pkg.re/essentialkaos/ek.v8/strutil"
-	"pkg.re/essentialkaos/ek.v8/usage"
-	"pkg.re/essentialkaos/ek.v8/usage/update"
+	"pkg.re/essentialkaos/ek.v9/env"
+	"pkg.re/essentialkaos/ek.v9/fmtc"
+	"pkg.re/essentialkaos/ek.v9/fmtutil"
+	"pkg.re/essentialkaos/ek.v9/fsutil"
+	"pkg.re/essentialkaos/ek.v9/options"
+	"pkg.re/essentialkaos/ek.v9/strutil"
+	"pkg.re/essentialkaos/ek.v9/usage"
+	"pkg.re/essentialkaos/ek.v9/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.2.0"
+	VER  = "0.3.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
 const (
-	ARG_EXTERNAL = "e:external"
-	ARG_MIN_SIZE = "m:min-size"
-	ARG_NO_COLOR = "nc:no-color"
-	ARG_HELP     = "h:help"
-	ARG_VER      = "v:version"
+	OPT_EXTERNAL = "e:external"
+	OPT_MIN_SIZE = "m:min-size"
+	OPT_NO_COLOR = "nc:no-color"
+	OPT_HELP     = "h:help"
+	OPT_VER      = "v:version"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -56,12 +56,12 @@ func (s LibInfoSlice) Less(i, j int) bool { return s[i].Size < s[j].Size }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-var argMap = arg.Map{
-	ARG_EXTERNAL: {Type: arg.BOOL},
-	ARG_MIN_SIZE: {},
-	ARG_NO_COLOR: {Type: arg.BOOL},
-	ARG_HELP:     {Type: arg.BOOL, Alias: "u:usage"},
-	ARG_VER:      {Type: arg.BOOL, Alias: "ver"},
+var optMap = options.Map{
+	OPT_EXTERNAL: {Type: options.BOOL},
+	OPT_MIN_SIZE: {},
+	OPT_NO_COLOR: {Type: options.BOOL},
+	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
+	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
 }
 
 var useRawOuput bool
@@ -71,7 +71,7 @@ var useRawOuput bool
 func main() {
 	runtime.GOMAXPROCS(1)
 
-	args, errs := arg.Parse(argMap)
+	args, errs := options.Parse(optMap)
 
 	if len(errs) != 0 {
 		for _, err := range errs {
@@ -83,12 +83,12 @@ func main() {
 
 	configureUI()
 
-	if arg.GetB(ARG_VER) {
+	if options.GetB(OPT_VER) {
 		showAbout()
 		return
 	}
 
-	if arg.GetB(ARG_HELP) || len(args) == 0 {
+	if options.GetB(OPT_HELP) || len(args) == 0 {
 		showUsage()
 		return
 	}
@@ -112,7 +112,7 @@ func configureUI() {
 		}
 	}
 
-	if arg.GetB(ARG_NO_COLOR) {
+	if options.GetB(OPT_NO_COLOR) {
 		fmtc.DisableColors = true
 	}
 
@@ -178,8 +178,8 @@ func printStats(libs LibInfoSlice) {
 	var colorTag string
 	var minSize uint64
 
-	if arg.Has(ARG_MIN_SIZE) {
-		minSize = fmtutil.ParseSize(arg.GetS(ARG_MIN_SIZE))
+	if options.Has(OPT_MIN_SIZE) {
+		minSize = fmtutil.ParseSize(options.GetS(OPT_MIN_SIZE))
 	}
 
 	for _, lib := range libs {
@@ -203,7 +203,7 @@ func printStats(libs LibInfoSlice) {
 			colorTag = ""
 		}
 
-		if arg.GetB(ARG_EXTERNAL) && !strings.Contains(lib.Package, ".") {
+		if options.GetB(OPT_EXTERNAL) && !strings.Contains(lib.Package, ".") {
 			fmtc.Printf(" {s-}%7s  %s{!}\n", fmtutil.PrettySize(lib.Size), lib.Package)
 		} else {
 			fmtc.Printf(" "+colorTag+"%7s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
@@ -266,11 +266,11 @@ func printErrorAndExit(f string, a ...interface{}) {
 func showUsage() {
 	info := usage.NewInfo("", "file")
 
-	info.AddOption(ARG_EXTERNAL, "Shadow internal packages")
-	info.AddOption(ARG_MIN_SIZE, "Don't show with size less than defined", "size")
-	info.AddOption(ARG_NO_COLOR, "Disable colors in output")
-	info.AddOption(ARG_HELP, "Show this help message")
-	info.AddOption(ARG_VER, "Show version")
+	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
+	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
+	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
+	info.AddOption(OPT_HELP, "Show this help message")
+	info.AddOption(OPT_VER, "Show version")
 
 	info.AddExample("application.go", "Show size of each used library")
 	info.AddExample("application.go -m 750kb", "Show size of each used library which greater than 750kb")
