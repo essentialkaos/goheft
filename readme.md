@@ -1,14 +1,14 @@
-# GoHeft [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=master)](https://travis-ci.org/essentialkaos/goheft) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/goheft)](https://goreportcard.com/report/github.com/essentialkaos/goheft) [![codebeat badge](https://codebeat.co/badges/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7)](https://codebeat.co/projects/github-com-essentialkaos-goheft-master) [![License](https://gh.kaos.io/ekol.svg)](https://essentialkaos.com/ekol)
+# GoHeft [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=master)](https://travis-ci.org/essentialkaos/goheft) [![Go Report Card](https://goreportcard.com/badge/github.com/essentialkaos/goheft)](https://goreportcard.com/report/github.com/essentialkaos/goheft) [![codebeat badge](https://codebeat.co/badges/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7)](https://codebeat.co/projects/github-com-essentialkaos-goheft-master) [![License](https://gh.kaos.st/ekol.svg)](https://essentialkaos.com/ekol)
 
 `goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
-![Screenshot](https://gh.kaos.io/goheft.png)
+![Screenshot](https://gh.kaos.st/goheft.png)
 
 ### Installation
 
 #### From source
 
-Before the initial install allows git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)):
+Before the initial install allows git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (_reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)_):
 
 ```
 git config --global http.https://pkg.re.followRedirects true
@@ -28,7 +28,7 @@ go get -u github.com/essentialkaos/goheft
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.io/goheft/latest).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/latest).
 
 ### Usage
 
@@ -68,4 +68,4 @@ Before contributing to this project please read our [Contributing Guidelines](ht
 
 [EKOL](https://essentialkaos.com/ekol)
 
-<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.io/ekgh.svg"/></a></p>
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>
