@@ -29,7 +29,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.3.0"
+	VER  = "0.3.1"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 

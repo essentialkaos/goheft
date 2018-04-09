@@ -14,7 +14,7 @@ Before the initial install allows git to use redirects for [pkg.re](https://gith
 git config --global http.https://pkg.re.followRedirects true
 ```
 
-To build the GoHeft from scratch, make sure you have a working Go 1.7+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.8+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/goheft
