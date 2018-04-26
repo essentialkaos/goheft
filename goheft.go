@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2017 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -29,7 +29,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.3.0"
+	VER  = "0.3.1"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
