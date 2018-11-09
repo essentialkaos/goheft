@@ -8,6 +8,7 @@ package main
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -15,21 +16,21 @@ import (
 	"sort"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v9/env"
-	"pkg.re/essentialkaos/ek.v9/fmtc"
-	"pkg.re/essentialkaos/ek.v9/fmtutil"
-	"pkg.re/essentialkaos/ek.v9/fsutil"
-	"pkg.re/essentialkaos/ek.v9/options"
-	"pkg.re/essentialkaos/ek.v9/strutil"
-	"pkg.re/essentialkaos/ek.v9/usage"
-	"pkg.re/essentialkaos/ek.v9/usage/update"
+	"pkg.re/essentialkaos/ek.v10/env"
+	"pkg.re/essentialkaos/ek.v10/fmtc"
+	"pkg.re/essentialkaos/ek.v10/fmtutil"
+	"pkg.re/essentialkaos/ek.v10/fsutil"
+	"pkg.re/essentialkaos/ek.v10/options"
+	"pkg.re/essentialkaos/ek.v10/strutil"
+	"pkg.re/essentialkaos/ek.v10/usage"
+	"pkg.re/essentialkaos/ek.v10/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.3.1"
+	VER  = "0.4.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -135,7 +136,11 @@ func process(file string) {
 		printErrorAndExit(err.Error())
 	}
 
-	libsInfo := getLibsInfo(workDir)
+	libsInfo, err := getLibsInfo(workDir)
+
+	if err != nil {
+		printErrorAndExit(err.Error())
+	}
 
 	if len(libsInfo) == 0 {
 		printWarn("No *.a files are found")
@@ -148,27 +153,63 @@ func process(file string) {
 }
 
 // getLibsInfo remove slice with info about all used static libs
-func getLibsInfo(workDir string) LibInfoSlice {
-	libs := fsutil.ListAllFiles(
+func getLibsInfo(workDir string) (LibInfoSlice, error) {
+	libs := fsutil.List(
 		workDir, true,
-		fsutil.ListingFilter{
-			MatchPatterns: []string{"*.a"},
-		},
+		fsutil.ListingFilter{Perms: "DRX"},
 	)
 
-	if len(libs) == 0 {
-		return nil
+	// Map package -> path
+	pathStore := make(map[string]string)
+
+	for _, libDir := range libs {
+		err := scanPkgImports(workDir+"/"+libDir+"/importcfg", pathStore)
+
+		if err != nil {
+			return LibInfoSlice{}, err
+		}
 	}
 
 	var result LibInfoSlice
 
-	for _, lib := range libs {
-		libName := strutil.Substr(lib, 0, len(lib)-2)
-		libSize := uint64(fsutil.GetSize(workDir + "/" + lib))
-		result = append(result, LibInfo{libName, libSize})
+	for name, lib := range pathStore {
+		result = append(result, LibInfo{
+			Package: name,
+			Size:    uint64(fsutil.GetSize(lib)),
+		})
 	}
 
-	return result
+	return result, nil
+}
+
+func scanPkgImports(file string, store map[string]string) error {
+	fd, err := os.OpenFile(file, os.O_RDONLY, 0)
+
+	if err != nil {
+		return err
+	}
+
+	defer fd.Close()
+
+	r := bufio.NewReader(fd)
+	s := bufio.NewScanner(r)
+
+	for s.Scan() {
+		text := s.Text()
+
+		if !strings.HasPrefix(text, "packagefile ") {
+			continue
+		}
+
+		pkgInfo := strutil.ReadField(text, 1, false, " ")
+		pkgName := strutil.ReadField(pkgInfo, 0, false, "=")
+
+		if store[pkgName] == "" {
+			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, "=")
+		}
+	}
+
+	return nil
 }
 
 // printStats print statistics
@@ -180,6 +221,10 @@ func printStats(libs LibInfoSlice) {
 
 	if options.Has(OPT_MIN_SIZE) {
 		minSize = fmtutil.ParseSize(options.GetS(OPT_MIN_SIZE))
+	}
+
+	if !useRawOuput {
+		fmtc.NewLine()
 	}
 
 	for _, lib := range libs {
@@ -209,40 +254,65 @@ func printStats(libs LibInfoSlice) {
 			fmtc.Printf(" "+colorTag+"%7s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
 		}
 	}
+
+	if !useRawOuput {
+		fmtc.NewLine()
+	}
 }
 
 // buildBinary run `go build` command and parse output
 func buildBinary(file string) (string, error) {
-	cmd := exec.Command(
-		"go",
-		"build",
-		"-work",
-		"-a",
-		file,
-	)
+	var workDir string
 
-	output, _ := cmd.CombinedOutput()
+	cmd := exec.Command("go", "build", "-work", "-a", "-v", file)
+	stderrReader, err := cmd.StderrPipe()
 
-	return parseBuildOutput(output)
-}
-
-// parseBuildOutput parse `go build` command output
-func parseBuildOutput(data []byte) (string, error) {
-	if len(data) == 0 {
-		return "", fmt.Errorf("\"go build\" output is empty")
+	if err != nil {
+		return "", fmt.Errorf("Can't redirect 'go build' output: %v", err)
 	}
 
-	// Remove empty line at the end
-	data = data[:len(data)-1]
+	scanner := bufio.NewScanner(stderrReader)
 
-	dataSlice := strings.Split(string(data), "\n")
-	workDir := strutil.Substr(dataSlice[0], 5, 9999)
+	go func() {
+		for scanner.Scan() {
+			text := scanner.Text()
 
-	if len(dataSlice) == 1 {
-		return workDir, nil
+			if workDir == "" {
+				workDir = text
+				continue
+			}
+
+			if strings.HasPrefix(text, "can't load package") {
+				return
+			}
+
+			if !useRawOuput {
+				fmtc.TPrintf("Building {*}%s{!}…", text)
+			}
+		}
+	}()
+
+	err = cmd.Start()
+
+	if err != nil {
+		return "", fmt.Errorf("Can't start build process: %v", err)
 	}
 
-	return workDir, fmt.Errorf(strings.Join(dataSlice[1:], "\n"))
+	if !useRawOuput {
+		fmtc.TPrintf("Processing sources…")
+	}
+
+	err = cmd.Wait()
+
+	if !useRawOuput {
+		fmtc.TPrintf("")
+	}
+
+	if err != nil {
+		return "", fmt.Errorf("Can't start build process: %v", err)
+	}
+
+	return strutil.ReadField(workDir, 1, false, "="), nil
 }
 
 // printError prints error message to console
