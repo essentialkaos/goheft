@@ -11,6 +11,8 @@
 
 `goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
+### Screenshots
+
 ![Screenshot](https://gh.kaos.st/goheft.png)
 
 ### Installation
@@ -23,7 +25,7 @@ Before the initial install allows git to use redirects for [pkg.re](https://gith
 git config --global http.https://pkg.re.followRedirects true
 ```
 
-To build the GoHeft from scratch, make sure you have a working Go 1.8+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.10+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/goheft
@@ -48,6 +50,7 @@ Options
 
   --external, -e         Shadow internal packages
   --min-size, -m size    Don't show with size less than defined
+  --raw, -r              Print raw data
   --no-color, -nc        Disable colors in output
   --help, -h             Show this help message
   --version, -v          Show version
