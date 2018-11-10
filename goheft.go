@@ -37,6 +37,7 @@ const (
 const (
 	OPT_EXTERNAL = "e:external"
 	OPT_MIN_SIZE = "m:min-size"
+	OPT_RAW      = "r:raw"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -60,6 +61,7 @@ func (s LibInfoSlice) Less(i, j int) bool { return s[i].Size < s[j].Size }
 var optMap = options.Map{
 	OPT_EXTERNAL: {Type: options.BOOL},
 	OPT_MIN_SIZE: {},
+	OPT_RAW:      {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
 	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
@@ -115,6 +117,10 @@ func configureUI() {
 
 	if options.GetB(OPT_NO_COLOR) {
 		fmtc.DisableColors = true
+	}
+
+	if options.GetB(OPT_RAW) {
+		useRawOuput = true
 	}
 
 	if !fsutil.IsCharacterDevice("/dev/stdout") && envVars.GetS("FAKETTY") == "" {
@@ -338,6 +344,7 @@ func showUsage() {
 
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
+	info.AddOption(OPT_RAW, "Print raw data")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")

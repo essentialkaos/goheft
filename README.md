@@ -11,6 +11,8 @@
 
 `goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
+### Screenshots
+
 ![Screenshot](https://gh.kaos.st/goheft.png)
 
 ### Installation
