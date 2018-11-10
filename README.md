@@ -50,6 +50,7 @@ Options
 
   --external, -e         Shadow internal packages
   --min-size, -m size    Don't show with size less than defined
+  --raw, -r              Print raw data
   --no-color, -nc        Disable colors in output
   --help, -h             Show this help message
   --version, -v          Show version
