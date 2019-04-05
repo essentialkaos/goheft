@@ -328,11 +328,11 @@ func buildBinary(file string) (string, error) {
 
 // normalizePackageName format package name
 func normalizePackageName(name string) string {
-	if !strings.Contains(name, "/vendor/") {
+	if !strings.Contains(name, "vendor/") {
 		return name
 	}
 
-	return strutil.Substr(name, strings.Index(name, "/vendor/")+8, 999999)
+	return strutil.Substr(name, strings.Index(name, "vendor/")+7, 999999)
 }
 
 // printError prints error message to console
