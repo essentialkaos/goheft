@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                     Copyright (c) 2009-2018 ESSENTIAL KAOS                         //
+//                     Copyright (c) 2009-2019 ESSENTIAL KAOS                         //
 //        Essential Kaos Open Source License <https://essentialkaos.com/ekol>         //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -30,7 +30,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.4.0"
+	VER  = "0.5.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -158,7 +158,7 @@ func process(file string) {
 	os.RemoveAll(workDir)
 }
 
-// getLibsInfo remove slice with info about all used static libs
+// getLibsInfo returns slice with info about all used static libs
 func getLibsInfo(workDir string) (LibInfoSlice, error) {
 	libs := fsutil.List(
 		workDir, true,
@@ -188,6 +188,7 @@ func getLibsInfo(workDir string) (LibInfoSlice, error) {
 	return result, nil
 }
 
+// scanPkgImports extracts packages data from given file
 func scanPkgImports(file string, store map[string]string) error {
 	fd, err := os.OpenFile(file, os.O_RDONLY, 0)
 
@@ -209,6 +210,8 @@ func scanPkgImports(file string, store map[string]string) error {
 
 		pkgInfo := strutil.ReadField(text, 1, false, " ")
 		pkgName := strutil.ReadField(pkgInfo, 0, false, "=")
+
+		pkgName = normalizePackageName(pkgName)
 
 		if store[pkgName] == "" {
 			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, "=")
@@ -292,6 +295,8 @@ func buildBinary(file string) (string, error) {
 				return
 			}
 
+			text = normalizePackageName(text)
+
 			if !useRawOuput {
 				fmtc.TPrintf("Building {*}%s{!}…", text)
 			}
@@ -319,6 +324,15 @@ func buildBinary(file string) (string, error) {
 	}
 
 	return strutil.ReadField(workDir, 1, false, "="), nil
+}
+
+// normalizePackageName format package name
+func normalizePackageName(name string) string {
+	if !strings.Contains(name, "vendor/") {
+		return name
+	}
+
+	return strutil.Substr(name, strings.Index(name, "vendor/")+7, 999999)
 }
 
 // printError prints error message to console
