@@ -39,7 +39,11 @@ go get -u github.com/essentialkaos/goheft
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/):
+
+```bash
+bash <(curl -fsSL https://apps.kaos.st/get) goheft
+```
 
 ### Usage
 
