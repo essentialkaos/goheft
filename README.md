@@ -1,13 +1,15 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/goheft.svg"/></a></p>
 
-<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
-
 <p align="center">
-  <a href="https://travis-ci.org/essentialkaos/goheft"><img src="https://travis-ci.org/essentialkaos/goheft.svg"></a>
+  <a href="https://travis-ci.com/essentialkaos/goheft"><img src="https://travis-ci.com/essentialkaos/goheft.svg"></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/goheft"><img src="https://goreportcard.com/badge/github.com/essentialkaos/goheft"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-goheft-master"><img alt="codebeat badge" src="https://codebeat.co/badges/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7" /></a>
   <a href="https://essentialkaos.com/ekol"><img src="https://gh.kaos.st/ekol.svg"></a>
 </p>
+
+<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+
+<br/>
 
 `goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
@@ -39,7 +41,11 @@ go get -u github.com/essentialkaos/goheft
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/).
+You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/):
+
+```bash
+bash <(curl -fsSL https://apps.kaos.st/get) goheft
+```
 
 ### Usage
 
@@ -69,8 +75,8 @@ Examples
 
 | Branch | Status |
 |------------|--------|
-| `master` | [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=master)](https://travis-ci.org/essentialkaos/goheft) |
-| `develop` | [![Build Status](https://travis-ci.org/essentialkaos/goheft.svg?branch=develop)](https://travis-ci.org/essentialkaos/goheft) |
+| `master` | [![Build Status](https://travis-ci.com/essentialkaos/goheft.svg?branch=master)](https://travis-ci.com/essentialkaos/goheft) |
+| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/goheft.svg?branch=develop)](https://travis-ci.com/essentialkaos/goheft) |
 
 ### Contributing
 
