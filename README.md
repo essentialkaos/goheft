@@ -1,7 +1,7 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/goheft.svg"/></a></p>
 
 <p align="center">
-  <a href="https://travis-ci.com/essentialkaos/goheft"><img src="https://travis-ci.com/essentialkaos/goheft.svg"></a>
+  <a href="https://github.com/essentialkaos/goheft/actions"><img src="https://github.com/essentialkaos/goheft/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
   <a href="https://github.com/essentialkaos/goheft/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/goheft/workflows/CodeQL/badge.svg" /></a>
   <a href="https://goreportcard.com/report/github.com/essentialkaos/goheft"><img src="https://goreportcard.com/badge/github.com/essentialkaos/goheft"></a>
   <a href="https://codebeat.co/projects/github-com-essentialkaos-goheft-master"><img alt="codebeat badge" src="https://codebeat.co/badges/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7" /></a>
@@ -22,13 +22,7 @@
 
 #### From source
 
-Before the initial install allows git to use redirects for [pkg.re](https://github.com/essentialkaos/pkgre) service (_reason why you should do this described [here](https://github.com/essentialkaos/pkgre#git-support)_):
-
-```
-git config --global http.https://pkg.re.followRedirects true
-```
-
-To build the GoHeft from scratch, make sure you have a working Go 1.10+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.13+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/goheft
@@ -76,8 +70,8 @@ Examples
 
 | Branch | Status |
 |------------|--------|
-| `master` | [![Build Status](https://travis-ci.com/essentialkaos/goheft.svg?branch=master)](https://travis-ci.com/essentialkaos/goheft) |
-| `develop` | [![Build Status](https://travis-ci.com/essentialkaos/goheft.svg?branch=develop)](https://travis-ci.com/essentialkaos/goheft) |
+| `master` | [![CI](https://github.com/essentialkaos/goheft/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/goheft/actions) |
+| `develop` | [![CI](https://github.com/essentialkaos/goheft/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/goheft/actions) |
 
 ### Contributing
 
