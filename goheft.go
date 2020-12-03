@@ -16,21 +16,21 @@ import (
 	"sort"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v10/env"
-	"pkg.re/essentialkaos/ek.v10/fmtc"
-	"pkg.re/essentialkaos/ek.v10/fmtutil"
-	"pkg.re/essentialkaos/ek.v10/fsutil"
-	"pkg.re/essentialkaos/ek.v10/options"
-	"pkg.re/essentialkaos/ek.v10/strutil"
-	"pkg.re/essentialkaos/ek.v10/usage"
-	"pkg.re/essentialkaos/ek.v10/usage/update"
+	"pkg.re/essentialkaos/ek.v12/env"
+	"pkg.re/essentialkaos/ek.v12/fmtc"
+	"pkg.re/essentialkaos/ek.v12/fmtutil"
+	"pkg.re/essentialkaos/ek.v12/fsutil"
+	"pkg.re/essentialkaos/ek.v12/options"
+	"pkg.re/essentialkaos/ek.v12/strutil"
+	"pkg.re/essentialkaos/ek.v12/usage"
+	"pkg.re/essentialkaos/ek.v12/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.5.0"
+	VER  = "0.5.1"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
