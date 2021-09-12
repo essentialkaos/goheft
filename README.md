@@ -1,10 +1,10 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/goheft.svg"/></a></p>
 
 <p align="center">
-  <a href="https://github.com/essentialkaos/goheft/actions"><img src="https://github.com/essentialkaos/goheft/workflows/CI/badge.svg" alt="GitHub Actions Status" /></a>
-  <a href="https://github.com/essentialkaos/goheft/actions?query=workflow%3ACodeQL"><img src="https://github.com/essentialkaos/goheft/workflows/CodeQL/badge.svg" /></a>
-  <a href="https://goreportcard.com/report/github.com/essentialkaos/goheft"><img src="https://goreportcard.com/badge/github.com/essentialkaos/goheft"></a>
-  <a href="https://codebeat.co/projects/github-com-essentialkaos-goheft-master"><img alt="codebeat badge" src="https://codebeat.co/badges/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7" /></a>
+  <a href="https://kaos.sh/w/goheft/ci"><img src="https://kaos.sh/w/goheft/ci.svg" alt="GitHub Actions CI Status" /></a>
+  <a href="https://kaos.sh/r/goheft"><img src="https://kaos.sh/r/goheft.svg" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/b/goheft"><img src="https://kaos.sh/b/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7.svg" alt="codebeat badge" /></a>
+  <a href="https://kaos.sh/w/goheft/codeql"><img src="https://kaos.sh/w/goheft/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
@@ -69,9 +69,9 @@ Examples
 ### Build Status
 
 | Branch | Status |
-|------------|--------|
-| `master` | [![CI](https://github.com/essentialkaos/goheft/workflows/CI/badge.svg?branch=master)](https://github.com/essentialkaos/goheft/actions) |
-| `develop` | [![CI](https://github.com/essentialkaos/goheft/workflows/CI/badge.svg?branch=develop)](https://github.com/essentialkaos/goheft/actions) |
+|--------|--------|
+| `master` | [![CI](https://kaos.sh/w/goheft/ci.svg?branch=master)](https://kaos.sh/w/goheft/ci?query=branch:master) |
+| `develop` | [![CI](https://kaos.sh/w/goheft/ci.svg?branch=master)](https://kaos.sh/w/goheft/ci?query=branch:develop) |
 
 ### Contributing
 
