@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2020 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2021 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -23,6 +23,10 @@ import (
 	"pkg.re/essentialkaos/ek.v12/options"
 	"pkg.re/essentialkaos/ek.v12/strutil"
 	"pkg.re/essentialkaos/ek.v12/usage"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/bash"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/fish"
+	"pkg.re/essentialkaos/ek.v12/usage/completion/zsh"
+	"pkg.re/essentialkaos/ek.v12/usage/man"
 	"pkg.re/essentialkaos/ek.v12/usage/update"
 )
 
@@ -30,7 +34,7 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.5.1"
+	VER  = "0.6.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -41,6 +45,17 @@ const (
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
+
+	OPT_COMPLETION   = "completion"
+	OPT_GENERATE_MAN = "generate-man"
+)
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+const (
+	SIZE_HUGE  uint64 = 5 * 1024 * 1024 // 5Mb
+	SIZE_BIG   uint64 = 1024 * 1024     // 1Mb
+	SIZE_SMALL uint64 = 25 * 1024       // 25Kb
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -87,13 +102,11 @@ func main() {
 	configureUI()
 
 	if options.GetB(OPT_VER) {
-		showAbout()
-		return
+		os.Exit(showAbout())
 	}
 
 	if options.GetB(OPT_HELP) || len(args) == 0 {
-		showUsage()
-		return
+		os.Exit(showUsage())
 	}
 
 	process(args[0])
@@ -247,11 +260,11 @@ func printStats(libs LibInfoSlice) {
 		}
 
 		switch {
-		case lib.Size > 5*1024*1024:
+		case lib.Size > SIZE_HUGE:
 			colorTag = "{r}"
-		case lib.Size > 1024*1024:
+		case lib.Size > SIZE_BIG:
 			colorTag = "{y}"
-		case lib.Size < 25*1024:
+		case lib.Size < SIZE_SMALL:
 			colorTag = "{s}"
 		default:
 			colorTag = ""
@@ -262,6 +275,13 @@ func printStats(libs LibInfoSlice) {
 		} else {
 			fmtc.Printf(" "+colorTag+"%7s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
 		}
+	}
+
+	if !useRawOuput && minSize == 0 {
+		fmtc.Printf(
+			"\n %7s  {*}Total{!} {s-}(packages: %d){!}\n",
+			fmtutil.PrettySize(libs.Total()), len(libs),
+		)
 	}
 
 	if !useRawOuput {
@@ -353,8 +373,64 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-func showUsage() {
-	info := usage.NewInfo("", "file")
+// Total returns size of all libraries
+func (s LibInfoSlice) Total() uint64 {
+	var result uint64
+
+	for _, l := range s {
+		result += l.Size
+	}
+
+	return result
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// showUsage prints usage info
+func showUsage() int {
+	genUsage().Render()
+	return 0
+}
+
+// showAbout prints info about version
+func showAbout() int {
+	genAbout().Render()
+	return 0
+}
+
+// genCompletion generates completion for different shells
+func genCompletion() int {
+	info := genUsage()
+
+	switch options.GetS(OPT_COMPLETION) {
+	case "bash":
+		fmt.Printf(bash.Generate(info, "goheft", "go"))
+	case "fish":
+		fmt.Printf(fish.Generate(info, "goheft"))
+	case "zsh":
+		fmt.Printf(zsh.Generate(info, optMap, "goheft", "*.go"))
+	default:
+		return 1
+	}
+
+	return 0
+}
+
+// genMan generates man page
+func genMan() int {
+	fmt.Println(
+		man.Generate(
+			genUsage(),
+			genAbout(),
+		),
+	)
+
+	return 0
+}
+
+// genUsage generates usage info
+func genUsage() *usage.Info {
+	info := usage.NewInfo("", "go-file")
 
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
@@ -366,11 +442,12 @@ func showUsage() {
 	info.AddExample("application.go", "Show size of each used library")
 	info.AddExample("application.go -m 750kb", "Show size of each used library which greater than 750kb")
 
-	info.Render()
+	return info
 }
 
-func showAbout() {
-	about := &usage.About{
+// genAbout generates info about version
+func genAbout() *usage.About {
+	return &usage.About{
 		App:           APP,
 		Version:       VER,
 		Desc:          DESC,
@@ -379,6 +456,4 @@ func showAbout() {
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/goheft", update.GitHubChecker},
 	}
-
-	about.Render()
 }
