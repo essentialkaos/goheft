@@ -22,7 +22,7 @@
 
 #### From source
 
-To build the GoHeft from scratch, make sure you have a working Go 1.13+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.15+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/goheft
