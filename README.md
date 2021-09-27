@@ -8,7 +8,7 @@
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
-<p align="center"><a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <br/>
 
@@ -22,7 +22,7 @@
 
 #### From source
 
-To build the GoHeft from scratch, make sure you have a working Go 1.13+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.15+ workspace ([instructions](https://golang.org/doc/install)), then:
 
 ```
 go get github.com/essentialkaos/goheft
@@ -36,16 +36,45 @@ go get -u github.com/essentialkaos/goheft
 
 #### Prebuilt binaries
 
-You can download prebuilt binaries for Linux and OS X from [EK Apps Repository](https://apps.kaos.st/goheft/):
+You can download prebuilt binaries for Linux and macOS from [EK Apps Repository](https://apps.kaos.st/goheft/):
 
 ```bash
 bash <(curl -fsSL https://apps.kaos.st/get) goheft
 ```
 
+### Command-line completion
+
+You can generate completion for `bash`, `zsh` or `fish` shell.
+
+Bash:
+```bash
+sudo goheft --completion=bash 1> /etc/bash_completion.d/goheft
+```
+
+
+ZSH:
+```bash
+sudo goheft --completion=zsh 1> /usr/share/zsh/site-functions/goheft
+```
+
+
+Fish:
+```bash
+sudo goheft --completion=fish 1> /usr/share/fish/vendor_completions.d/goheft.fish
+```
+
+### Man documentation
+
+You can generate man page for goheft using next command:
+
+```bash
+goheft --generate-man | sudo gzip > /usr/share/man/man1/goheft.1.gz
+```
+
 ### Usage
 
 ```
-Usage: goheft {options} file
+Usage: goheft {options} go-file
 
 Options
 
