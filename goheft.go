@@ -2,7 +2,7 @@ package main
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2021 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -16,25 +16,25 @@ import (
 	"sort"
 	"strings"
 
-	"pkg.re/essentialkaos/ek.v12/env"
-	"pkg.re/essentialkaos/ek.v12/fmtc"
-	"pkg.re/essentialkaos/ek.v12/fmtutil"
-	"pkg.re/essentialkaos/ek.v12/fsutil"
-	"pkg.re/essentialkaos/ek.v12/options"
-	"pkg.re/essentialkaos/ek.v12/strutil"
-	"pkg.re/essentialkaos/ek.v12/usage"
-	"pkg.re/essentialkaos/ek.v12/usage/completion/bash"
-	"pkg.re/essentialkaos/ek.v12/usage/completion/fish"
-	"pkg.re/essentialkaos/ek.v12/usage/completion/zsh"
-	"pkg.re/essentialkaos/ek.v12/usage/man"
-	"pkg.re/essentialkaos/ek.v12/usage/update"
+	"github.com/essentialkaos/ek/v12/env"
+	"github.com/essentialkaos/ek/v12/fmtc"
+	"github.com/essentialkaos/ek/v12/fmtutil"
+	"github.com/essentialkaos/ek/v12/fsutil"
+	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v12/usage"
+	"github.com/essentialkaos/ek/v12/usage/completion/bash"
+	"github.com/essentialkaos/ek/v12/usage/completion/fish"
+	"github.com/essentialkaos/ek/v12/usage/completion/zsh"
+	"github.com/essentialkaos/ek/v12/usage/man"
+	"github.com/essentialkaos/ek/v12/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.6.0"
+	VER  = "0.6.1"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
