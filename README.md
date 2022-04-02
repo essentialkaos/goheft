@@ -22,16 +22,10 @@
 
 #### From source
 
-To build the GoHeft from scratch, make sure you have a working Go 1.15+ workspace ([instructions](https://golang.org/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.16+ workspace ([instructions](https://go.dev/doc/install)), then:
 
 ```
-go get github.com/essentialkaos/goheft
-```
-
-If you want update GoHeft to latest stable release, do:
-
-```
-go get -u github.com/essentialkaos/goheft
+go install github.com/essentialkaos/goheft
 ```
 
 #### Prebuilt binaries
@@ -100,7 +94,7 @@ Examples
 | Branch | Status |
 |--------|--------|
 | `master` | [![CI](https://kaos.sh/w/goheft/ci.svg?branch=master)](https://kaos.sh/w/goheft/ci?query=branch:master) |
-| `develop` | [![CI](https://kaos.sh/w/goheft/ci.svg?branch=master)](https://kaos.sh/w/goheft/ci?query=branch:develop) |
+| `develop` | [![CI](https://kaos.sh/w/goheft/ci.svg?branch=develop)](https://kaos.sh/w/goheft/ci?query=branch:develop) |
 
 ### Contributing
 
