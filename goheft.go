@@ -109,7 +109,7 @@ func main() {
 		os.Exit(showUsage())
 	}
 
-	process(args[0])
+	process(args.Get(0).Clean().String())
 }
 
 // configureUI configure user interface
