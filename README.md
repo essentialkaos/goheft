@@ -25,7 +25,7 @@
 To build the GoHeft from scratch, make sure you have a working Go 1.18+ workspace ([instructions](https://go.dev/doc/install)), then:
 
 ```
-go install github.com/essentialkaos/goheft
+go install github.com/essentialkaos/goheft@latest
 ```
 
 #### Prebuilt binaries
