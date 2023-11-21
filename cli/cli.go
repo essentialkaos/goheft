@@ -89,6 +89,7 @@ var optMap = options.Map{
 }
 
 var useRawOutput bool
+var isCI bool
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -142,6 +143,10 @@ func preConfigureUI() {
 
 	if os.Getenv("NO_COLOR") != "" {
 		fmtc.DisableColors = true
+	}
+
+	if os.Getenv("CI") != "" {
+		isCI = true
 	}
 }
 
@@ -328,7 +333,7 @@ func compileBinary(file string) (string, error) {
 
 			text = normalizePackageName(text)
 
-			fmtc.If(!useRawOutput).TPrintf("Compiling {*}%s{!}…", text)
+			fmtc.If(!useRawOutput && !isCI).TPrintf("Compiling {*}%s{!}…", text)
 		}
 	}()
 
@@ -338,11 +343,11 @@ func compileBinary(file string) (string, error) {
 		return "", fmt.Errorf("Can't start build process: %v", err)
 	}
 
-	fmtc.If(!useRawOutput).TPrintf("Processing sources…")
+	fmtc.If(!useRawOutput && !isCI).TPrintf("Processing sources…")
 
 	err = cmd.Wait()
 
-	fmtc.If(!useRawOutput).TPrintf("")
+	fmtc.If(!useRawOutput && !isCI).TPrintf("")
 
 	if err != nil {
 		return "", fmt.Errorf("Can't start build process: %v", err)
