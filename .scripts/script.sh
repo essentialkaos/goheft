@@ -9,7 +9,7 @@ main() {
 
   mv goheft goheft-binary
 
-  ./goheft-binary --raw goheft.go
+  ./goheft-binary goheft.go | cat
 
   if [[ $? -ne 0 ]] ; then
     exit 1
