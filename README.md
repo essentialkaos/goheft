@@ -8,21 +8,21 @@
   <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
 </p>
 
-<p align="center"><a href="#screenshots">Screenshots</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+<p align="center"><a href="#usage-demo">Usage demo</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
 
 <br/>
 
 `goheft` is simple utility for listing sizes of all used static libraries compiled into golang binary.
 
-### Screenshots
+### Usage demo
 
-![Screenshot](https://gh.kaos.st/goheft.png)
+[![demo](https://gh.kaos.st/goheft-070.gif)](#usage-demo)
 
 ### Installation
 
 #### From source
 
-To build the GoHeft from scratch, make sure you have a working Go 1.18+ workspace ([instructions](https://go.dev/doc/install)), then:
+To build the GoHeft from scratch, make sure you have a working Go 1.19+ workspace ([instructions](https://go.dev/doc/install)), then:
 
 ```
 go install github.com/essentialkaos/goheft@latest
@@ -74,7 +74,6 @@ Options
 
   --external, -e         Shadow internal packages
   --min-size, -m size    Don't show with size less than defined
-  --raw, -r              Print raw data
   --no-color, -nc        Disable colors in output
   --help, -h             Show this help message
   --version, -v          Show version
