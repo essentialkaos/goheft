@@ -42,7 +42,8 @@ const (
 )
 
 const (
-	OPT_EXTERNAL = "e:external"
+	OPT_EXTERNAL = "E:external"
+	OPT_PAGER    = "P:pager"
 	OPT_MIN_SIZE = "m:min-size"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
@@ -181,9 +182,10 @@ func process(file string) {
 		return
 	}
 
-	if !useRawOutput {
-		pager.Setup("")
-		defer pager.Complete()
+	if options.GetB(OPT_PAGER) && !useRawOutput {
+		if pager.Setup() == nil {
+			defer pager.Complete()
+		}
 	}
 
 	printStats(libsInfo)
@@ -429,6 +431,7 @@ func genUsage() *usage.Info {
 	info := usage.NewInfo("", "go-file")
 
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
+	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
