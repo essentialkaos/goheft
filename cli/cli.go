@@ -79,6 +79,7 @@ func (s LibInfoSlice) Less(i, j int) bool { return s[i].Size < s[j].Size }
 
 var optMap = options.Map{
 	OPT_EXTERNAL: {Type: options.BOOL},
+	OPT_PAGER:    {Type: options.BOOL},
 	OPT_MIN_SIZE: {},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
