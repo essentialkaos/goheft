@@ -20,7 +20,9 @@ import (
 	"github.com/essentialkaos/ek/v12/fmtutil"
 	"github.com/essentialkaos/ek/v12/fsutil"
 	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/pager"
 	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v12/terminal/tty"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
 	"github.com/essentialkaos/ek/v12/usage/completion/fish"
@@ -35,14 +37,14 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.6.2"
+	VER  = "0.7.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
 const (
-	OPT_EXTERNAL = "e:external"
+	OPT_EXTERNAL = "E:external"
+	OPT_PAGER    = "P:pager"
 	OPT_MIN_SIZE = "m:min-size"
-	OPT_RAW      = "r:raw"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
@@ -77,8 +79,8 @@ func (s LibInfoSlice) Less(i, j int) bool { return s[i].Size < s[j].Size }
 
 var optMap = options.Map{
 	OPT_EXTERNAL: {Type: options.BOOL},
+	OPT_PAGER:    {Type: options.BOOL},
 	OPT_MIN_SIZE: {},
-	OPT_RAW:      {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
 	OPT_VER:      {Type: options.BOOL},
@@ -88,13 +90,16 @@ var optMap = options.Map{
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
 
+var colorTagApp string
+var colorTagVer string
 var useRawOutput bool
+var isCI bool
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 // Run is main utility function
 func Run(gitRev string, gomod []byte) {
-	runtime.GOMAXPROCS(1)
+	runtime.GOMAXPROCS(2)
 
 	preConfigureUI()
 
@@ -129,26 +134,32 @@ func Run(gitRev string, gomod []byte) {
 
 // preConfigureUI preconfigures UI based on information about user terminal
 func preConfigureUI() {
-	term := os.Getenv("TERM")
-
 	fmtc.DisableColors = true
 
-	if term != "" {
-		switch {
-		case strings.Contains(term, "xterm"),
-			strings.Contains(term, "color"),
-			term == "screen":
-			fmtc.DisableColors = false
-		}
+	if fmtc.IsColorsSupported() {
+		fmtc.DisableColors = false
 	}
 
-	if !fsutil.IsCharacterDevice("/dev/stdout") && os.Getenv("FAKETTY") == "" {
+	if !tty.IsTTY() {
 		fmtc.DisableColors = true
 		useRawOutput = true
 	}
 
 	if os.Getenv("NO_COLOR") != "" {
 		fmtc.DisableColors = true
+	}
+
+	if os.Getenv("CI") != "" {
+		isCI = true
+	}
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{c}", "{c}"
 	}
 }
 
@@ -159,13 +170,13 @@ func configureUI() {
 	}
 }
 
-// process start build
+// process processes libs data
 func process(file string) {
 	if !fsutil.IsExist(file) {
 		printErrorAndExit("Can't build binary - file %s does not exist", file)
 	}
 
-	workDir, err := buildBinary(file)
+	workDir, err := compileBinary(file)
 
 	if err != nil {
 		os.RemoveAll(workDir)
@@ -181,6 +192,12 @@ func process(file string) {
 	if len(libsInfo) == 0 {
 		printWarn("No *.a files are found")
 		return
+	}
+
+	if options.GetB(OPT_PAGER) && !useRawOutput {
+		if pager.Setup() == nil {
+			defer pager.Complete()
+		}
 	}
 
 	printStats(libsInfo)
@@ -262,9 +279,7 @@ func printStats(libs LibInfoSlice) {
 		minSize = fmtutil.ParseSize(options.GetS(OPT_MIN_SIZE))
 	}
 
-	if !useRawOutput {
-		fmtc.NewLine()
-	}
+	fmtc.If(!useRawOutput).NewLine()
 
 	for _, lib := range libs {
 		if lib.Size < minSize {
@@ -288,26 +303,24 @@ func printStats(libs LibInfoSlice) {
 		}
 
 		if options.GetB(OPT_EXTERNAL) && !strings.Contains(lib.Package, ".") {
-			fmtc.Printf(" {s-}%7s  %s{!}\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printf(" {s-}%8s  %s{!}\n", fmtutil.PrettySize(lib.Size), lib.Package)
 		} else {
-			fmtc.Printf(" "+colorTag+"%7s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printf(" "+colorTag+"%8s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
 		}
 	}
 
 	if !useRawOutput && minSize == 0 {
 		fmtc.Printf(
-			"\n %7s  {*}Total{!} {s-}(packages: %d){!}\n",
+			"\n %8s  {*}Total{!} {s-}(packages: %d){!}\n",
 			fmtutil.PrettySize(libs.Total()), len(libs),
 		)
 	}
 
-	if !useRawOutput {
-		fmtc.NewLine()
-	}
+	fmtc.If(!useRawOutput).NewLine()
 }
 
-// buildBinary run `go build` command and parse output
-func buildBinary(file string) (string, error) {
+// compileBinary run `go build` command and parse output
+func compileBinary(file string) (string, error) {
 	var workDir string
 
 	cmd := exec.Command("go", "build", "-work", "-a", "-v", file)
@@ -334,9 +347,7 @@ func buildBinary(file string) (string, error) {
 
 			text = normalizePackageName(text)
 
-			if !useRawOutput {
-				fmtc.TPrintf("Building {*}%s{!}…", text)
-			}
+			fmtc.If(!useRawOutput && !isCI).TPrintf("Compiling {*}%s{!}…", text)
 		}
 	}()
 
@@ -346,15 +357,11 @@ func buildBinary(file string) (string, error) {
 		return "", fmt.Errorf("Can't start build process: %v", err)
 	}
 
-	if !useRawOutput {
-		fmtc.TPrintf("Processing sources…")
-	}
+	fmtc.If(!useRawOutput && !isCI).TPrintf("Processing sources…")
 
 	err = cmd.Wait()
 
-	if !useRawOutput {
-		fmtc.TPrintf("")
-	}
+	fmtc.If(!useRawOutput && !isCI).TPrintf("")
 
 	if err != nil {
 		return "", fmt.Errorf("Can't start build process: %v", err)
@@ -382,7 +389,7 @@ func printWarn(f string, a ...interface{}) {
 	fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
 }
 
-// printErrorAndExit print error mesage and exit with exit code 1
+// printErrorAndExit print error message and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
 	printError(f, a...)
 	os.Exit(1)
@@ -435,9 +442,11 @@ func printMan() {
 func genUsage() *usage.Info {
 	info := usage.NewInfo("", "go-file")
 
+	info.AppNameColorTag = colorTagApp
+
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
+	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
-	info.AddOption(OPT_RAW, "Print raw data")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
@@ -451,11 +460,16 @@ func genUsage() *usage.Info {
 // genAbout generates info about version
 func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2006,
-		Owner:         "ESSENTIAL KAOS",
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2006,
+		Owner:   "ESSENTIAL KAOS",
+
+		AppNameColorTag: colorTagApp,
+		VersionColorTag: colorTagVer,
+		DescSeparator:   "—",
+
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/goheft", update.GitHubChecker},
 	}
