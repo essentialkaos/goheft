@@ -89,6 +89,8 @@ var optMap = options.Map{
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
 
+var colorTagApp string
+var colorTagVer string
 var useRawOutput bool
 var isCI bool
 
@@ -148,6 +150,15 @@ func preConfigureUI() {
 
 	if os.Getenv("CI") != "" {
 		isCI = true
+	}
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{c}", "{c}"
 	}
 }
 
@@ -430,6 +441,8 @@ func printMan() {
 func genUsage() *usage.Info {
 	info := usage.NewInfo("", "go-file")
 
+	info.AppNameColorTag = colorTagApp
+
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
 	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
@@ -446,11 +459,16 @@ func genUsage() *usage.Info {
 // genAbout generates info about version
 func genAbout(gitRev string) *usage.About {
 	about := &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2006,
-		Owner:         "ESSENTIAL KAOS",
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2006,
+		Owner:   "ESSENTIAL KAOS",
+
+		AppNameColorTag: colorTagApp,
+		VersionColorTag: colorTagVer,
+		DescSeparator:   "—",
+
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/goheft", update.GitHubChecker},
 	}

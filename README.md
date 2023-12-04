@@ -72,7 +72,8 @@ Usage: goheft {options} go-file
 
 Options
 
-  --external, -e         Shadow internal packages
+  --external, -E         Shadow internal packages
+  --pager, -P            Use pager for long output
   --min-size, -m size    Don't show with size less than defined
   --no-color, -nc        Disable colors in output
   --help, -h             Show this help message
@@ -85,7 +86,6 @@ Examples
 
   goheft application.go -m 750kb
   Show size of each used library which greater than 750kb
-
 ```
 
 ### Build Status
