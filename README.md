@@ -72,6 +72,7 @@ Usage: goheft {options} go-file
 
 Options
 
+  --tags, -t tag…        Build tags (mergeble)
   --external, -E         Shadow internal packages
   --pager, -P            Use pager for long output
   --min-size, -m size    Don't show with size less than defined
@@ -86,6 +87,9 @@ Examples
 
   goheft application.go -m 750kb
   Show size of each used library which greater than 750kb
+
+  goheft application.go -t release,slim
+  Use tags when building and counting size
 ```
 
 ### Build Status
