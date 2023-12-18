@@ -37,11 +37,12 @@ import (
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.7.0"
+	VER  = "0.8.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
 const (
+	OPT_TAGS     = "t:tags"
 	OPT_EXTERNAL = "E:external"
 	OPT_PAGER    = "P:pager"
 	OPT_MIN_SIZE = "m:min-size"
@@ -78,6 +79,7 @@ func (s LibInfoSlice) Less(i, j int) bool { return s[i].Size < s[j].Size }
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 var optMap = options.Map{
+	OPT_TAGS:     {Mergeble: true},
 	OPT_EXTERNAL: {Type: options.BOOL},
 	OPT_PAGER:    {Type: options.BOOL},
 	OPT_MIN_SIZE: {},
@@ -323,7 +325,17 @@ func printStats(libs LibInfoSlice) {
 func compileBinary(file string) (string, error) {
 	var workDir string
 
-	cmd := exec.Command("go", "build", "-work", "-a", "-v", file)
+	cmd := exec.Command("go", "build", "-work", "-a", "-v")
+
+	if options.Has(OPT_TAGS) {
+		cmd.Args = append(cmd.Args,
+			"-tags",
+			strings.ReplaceAll(options.GetS(OPT_TAGS), " ", ","),
+		)
+	}
+
+	cmd.Args = append(cmd.Args, file)
+
 	stderrReader, err := cmd.StderrPipe()
 
 	if err != nil {
@@ -416,11 +428,11 @@ func printCompletion() int {
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "goheft", "go"))
+		fmt.Print(bash.Generate(info, "goheft", "go"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "goheft"))
+		fmt.Print(fish.Generate(info, "goheft"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "goheft", "*.go"))
+		fmt.Print(zsh.Generate(info, optMap, "goheft", "*.go"))
 	default:
 		return 1
 	}
@@ -444,6 +456,7 @@ func genUsage() *usage.Info {
 
 	info.AppNameColorTag = colorTagApp
 
+	info.AddOption(OPT_TAGS, "Build tags {s-}(mergeble){!}", "tag…")
 	info.AddOption(OPT_EXTERNAL, "Shadow internal packages")
 	info.AddOption(OPT_PAGER, "Use pager for long output")
 	info.AddOption(OPT_MIN_SIZE, "Don't show with size less than defined", "size")
@@ -453,6 +466,7 @@ func genUsage() *usage.Info {
 
 	info.AddExample("application.go", "Show size of each used library")
 	info.AddExample("application.go -m 750kb", "Show size of each used library which greater than 750kb")
+	info.AddExample("application.go -t release,slim", "Use tags when building and counting size")
 
 	return info
 }
