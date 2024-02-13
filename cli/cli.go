@@ -257,13 +257,13 @@ func scanPkgImports(file string, store map[string]string) error {
 			continue
 		}
 
-		pkgInfo := strutil.ReadField(text, 1, false, " ")
-		pkgName := strutil.ReadField(pkgInfo, 0, false, "=")
+		pkgInfo := strutil.ReadField(text, 1, false, ' ')
+		pkgName := strutil.ReadField(pkgInfo, 0, false, '=')
 
 		pkgName = normalizePackageName(pkgName)
 
 		if store[pkgName] == "" {
-			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, "=")
+			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, '=')
 		}
 	}
 
@@ -379,7 +379,7 @@ func compileBinary(file string) (string, error) {
 		return "", fmt.Errorf("Can't start build process: %v", err)
 	}
 
-	return strutil.ReadField(workDir, 1, false, "="), nil
+	return strutil.ReadField(workDir, 1, false, '='), nil
 }
 
 // normalizePackageName format package name
