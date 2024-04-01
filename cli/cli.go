@@ -2,7 +2,7 @@ package cli
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2024 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -22,6 +22,9 @@ import (
 	"github.com/essentialkaos/ek/v12/options"
 	"github.com/essentialkaos/ek/v12/pager"
 	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v12/support"
+	"github.com/essentialkaos/ek/v12/support/apps"
+	"github.com/essentialkaos/ek/v12/support/deps"
 	"github.com/essentialkaos/ek/v12/terminal/tty"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
@@ -29,15 +32,13 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/completion/zsh"
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
-
-	"github.com/essentialkaos/goheft/cli/support"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "0.8.0"
+	VER  = "1.0.0"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -85,7 +86,7 @@ var optMap = options.Map{
 	OPT_MIN_SIZE: {},
 	OPT_NO_COLOR: {Type: options.BOOL},
 	OPT_HELP:     {Type: options.BOOL},
-	OPT_VER:      {Type: options.BOOL},
+	OPT_VER:      {Type: options.MIXED},
 
 	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
@@ -124,7 +125,11 @@ func Run(gitRev string, gomod []byte) {
 		genAbout(gitRev).Print()
 		os.Exit(0)
 	case options.GetB(OPT_VERB_VER):
-		support.Print(APP, VER, gitRev, gomod)
+		support.Collect(APP, VER).
+			WithRevision(gitRev).
+			WithDeps(deps.Extract(gomod)).
+			WithApps(apps.Golang()).
+			Print()
 		os.Exit(0)
 	case options.GetB(OPT_HELP) || len(args) == 0:
 		genUsage().Print()
@@ -257,13 +262,13 @@ func scanPkgImports(file string, store map[string]string) error {
 			continue
 		}
 
-		pkgInfo := strutil.ReadField(text, 1, false, " ")
-		pkgName := strutil.ReadField(pkgInfo, 0, false, "=")
+		pkgInfo := strutil.ReadField(text, 1, false, ' ')
+		pkgName := strutil.ReadField(pkgInfo, 0, false, '=')
 
 		pkgName = normalizePackageName(pkgName)
 
 		if store[pkgName] == "" {
-			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, "=")
+			store[pkgName] = strutil.ReadField(pkgInfo, 1, false, '=')
 		}
 	}
 
@@ -379,7 +384,7 @@ func compileBinary(file string) (string, error) {
 		return "", fmt.Errorf("Can't start build process: %v", err)
 	}
 
-	return strutil.ReadField(workDir, 1, false, "="), nil
+	return strutil.ReadField(workDir, 1, false, '='), nil
 }
 
 // normalizePackageName format package name
@@ -484,12 +489,15 @@ func genAbout(gitRev string) *usage.About {
 		VersionColorTag: colorTagVer,
 		DescSeparator:   "—",
 
-		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
-		UpdateChecker: usage.UpdateChecker{"essentialkaos/goheft", update.GitHubChecker},
+		License: "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 	}
 
 	if gitRev != "" {
 		about.Build = "git:" + gitRev
+		about.UpdateChecker = usage.UpdateChecker{
+			"essentialkaos/goheft",
+			update.GitHubChecker,
+		}
 	}
 
 	return about
