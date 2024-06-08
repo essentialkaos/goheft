@@ -67,30 +67,7 @@ goheft --generate-man | sudo gzip > /usr/share/man/man1/goheft.1.gz
 
 ### Usage
 
-```
-Usage: goheft {options} go-file
-
-Options
-
-  --tags, -t tag…        Build tags (mergeble)
-  --external, -E         Shadow internal packages
-  --pager, -P            Use pager for long output
-  --min-size, -m size    Don't show with size less than defined
-  --no-color, -nc        Disable colors in output
-  --help, -h             Show this help message
-  --version, -v          Show version
-
-Examples
-
-  goheft application.go
-  Show size of each used library
-
-  goheft application.go -m 750kb
-  Show size of each used library which greater than 750kb
-
-  goheft application.go -t release,slim
-  Use tags when building and counting size
-```
+<img src=".github/images/usage.svg" />
 
 ### Build Status
 
