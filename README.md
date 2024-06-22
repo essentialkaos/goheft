@@ -1,11 +1,11 @@
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/goheft.svg"/></a></p>
+<p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
   <a href="https://kaos.sh/w/goheft/ci"><img src="https://kaos.sh/w/goheft/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/goheft"><img src="https://kaos.sh/r/goheft.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/b/goheft"><img src="https://kaos.sh/b/43c7247d-ff5d-4684-8d9d-cf5e85b8c7a7.svg" alt="codebeat badge" /></a>
   <a href="https://kaos.sh/w/goheft/codeql"><img src="https://kaos.sh/w/goheft/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
-  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
+  <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
 <p align="center"><a href="#usage-demo">Usage demo</a> • <a href="#installation">Installation</a> • <a href="#usage">Usage</a> • <a href="#build-status">Build Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
@@ -67,30 +67,7 @@ goheft --generate-man | sudo gzip > /usr/share/man/man1/goheft.1.gz
 
 ### Usage
 
-```
-Usage: goheft {options} go-file
-
-Options
-
-  --tags, -t tag…        Build tags (mergeble)
-  --external, -E         Shadow internal packages
-  --pager, -P            Use pager for long output
-  --min-size, -m size    Don't show with size less than defined
-  --no-color, -nc        Disable colors in output
-  --help, -h             Show this help message
-  --version, -v          Show version
-
-Examples
-
-  goheft application.go
-  Show size of each used library
-
-  goheft application.go -m 750kb
-  Show size of each used library which greater than 750kb
-
-  goheft application.go -t release,slim
-  Use tags when building and counting size
-```
+<p align="center"><img src=".github/images/usage.svg"/></p>
 
 ### Build Status
 
