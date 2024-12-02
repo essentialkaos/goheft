@@ -310,15 +310,15 @@ func printStats(libs LibInfoSlice) {
 		}
 
 		if options.GetB(OPT_EXTERNAL) && !strings.Contains(lib.Package, ".") {
-			fmtc.Printf(" {s-}%8s  %s{!}\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printfn(" {s-}%8s  %s{!}", fmtutil.PrettySize(lib.Size), lib.Package)
 		} else {
-			fmtc.Printf(" "+colorTag+"%8s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printfn(" "+colorTag+"%8s{!}  %s", fmtutil.PrettySize(lib.Size), lib.Package)
 		}
 	}
 
 	if !useRawOutput && minSize == 0 {
-		fmtc.Printf(
-			"\n %8s  {*}Total{!} {s-}(packages: %d){!}\n",
+		fmtc.Printfn(
+			"\n %8s  {*}Total{!} {s-}(packages: %d){!}",
 			fmtutil.PrettySize(libs.Total()), len(libs),
 		)
 	}
