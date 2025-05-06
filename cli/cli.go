@@ -2,7 +2,7 @@ package cli
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2024 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2025 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -16,29 +16,29 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/essentialkaos/ek/v12/fmtc"
-	"github.com/essentialkaos/ek/v12/fmtutil"
-	"github.com/essentialkaos/ek/v12/fsutil"
-	"github.com/essentialkaos/ek/v12/options"
-	"github.com/essentialkaos/ek/v12/pager"
-	"github.com/essentialkaos/ek/v12/strutil"
-	"github.com/essentialkaos/ek/v12/support"
-	"github.com/essentialkaos/ek/v12/support/apps"
-	"github.com/essentialkaos/ek/v12/support/deps"
-	"github.com/essentialkaos/ek/v12/terminal/tty"
-	"github.com/essentialkaos/ek/v12/usage"
-	"github.com/essentialkaos/ek/v12/usage/completion/bash"
-	"github.com/essentialkaos/ek/v12/usage/completion/fish"
-	"github.com/essentialkaos/ek/v12/usage/completion/zsh"
-	"github.com/essentialkaos/ek/v12/usage/man"
-	"github.com/essentialkaos/ek/v12/usage/update"
+	"github.com/essentialkaos/ek/v13/fmtc"
+	"github.com/essentialkaos/ek/v13/fmtutil"
+	"github.com/essentialkaos/ek/v13/fsutil"
+	"github.com/essentialkaos/ek/v13/options"
+	"github.com/essentialkaos/ek/v13/pager"
+	"github.com/essentialkaos/ek/v13/strutil"
+	"github.com/essentialkaos/ek/v13/support"
+	"github.com/essentialkaos/ek/v13/support/apps"
+	"github.com/essentialkaos/ek/v13/support/deps"
+	"github.com/essentialkaos/ek/v13/terminal/tty"
+	"github.com/essentialkaos/ek/v13/usage"
+	"github.com/essentialkaos/ek/v13/usage/completion/bash"
+	"github.com/essentialkaos/ek/v13/usage/completion/fish"
+	"github.com/essentialkaos/ek/v13/usage/completion/zsh"
+	"github.com/essentialkaos/ek/v13/usage/man"
+	"github.com/essentialkaos/ek/v13/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 const (
 	APP  = "GoHeft"
-	VER  = "1.0.1"
+	VER  = "1.0.2"
 	DESC = "Utility for listing sizes of used static libraries"
 )
 
@@ -310,15 +310,15 @@ func printStats(libs LibInfoSlice) {
 		}
 
 		if options.GetB(OPT_EXTERNAL) && !strings.Contains(lib.Package, ".") {
-			fmtc.Printf(" {s-}%8s  %s{!}\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printfn(" {s-}%8s  %s{!}", fmtutil.PrettySize(lib.Size), lib.Package)
 		} else {
-			fmtc.Printf(" "+colorTag+"%8s{!}  %s\n", fmtutil.PrettySize(lib.Size), lib.Package)
+			fmtc.Printfn(" "+colorTag+"%8s{!}  %s", fmtutil.PrettySize(lib.Size), lib.Package)
 		}
 	}
 
 	if !useRawOutput && minSize == 0 {
-		fmtc.Printf(
-			"\n %8s  {*}Total{!} {s-}(packages: %d){!}\n",
+		fmtc.Printfn(
+			"\n %8s  {*}Total{!} {s-}(packages: %d){!}",
 			fmtutil.PrettySize(libs.Total()), len(libs),
 		)
 	}
