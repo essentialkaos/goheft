@@ -15,7 +15,7 @@
 
 ### Usage demo
 
-[![demo](https://gh.kaos.st/goheft-070.gif)](#usage-demo)
+[![demo](https://github.com/user-attachments/assets/66d24052-6cc7-4537-8871-82180ca0e4f9)](#usage-demo)
 
 ### Installation
 
